@@ -34,7 +34,6 @@ const RecipeDialog = (props) =>{
     };
 
     const handleFormSubmission = (values) => {
-        console.log(values, recipesPostUrl, type);
         if(type === "edit"){
             axios.patch(recipesPostUrl, values).then(res => alert(res.message)).catch(err => alert(`Unfortunately, this axios request does not seem to work. The url will return a 404. Example: ${err.message}`));
         } else if(type === "create"){
@@ -45,7 +44,7 @@ const RecipeDialog = (props) =>{
     return (
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>{type === "edit" ? 'Edit Recipe' : 'Create Recipe'}</DialogTitle>
-            <Formik onChange={(values) => {console.log(values, ' vales')}} enableReinitialize={true} initialValues={values} onSubmit={ (values) => handleFormSubmission(values) }>
+            <Formik enableReinitialize={true} initialValues={values} onSubmit={ (values) => handleFormSubmission(values) }>
                 {({ values }) => (
                     <Form>
                         <TextFieldWrapper name="title" label="Title" customStyle={{margin: '0 5% 2.5%', width: '90%'}} />
