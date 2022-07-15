@@ -30,7 +30,6 @@ const RecipeDialog = (props) =>{
     const { handleClose, open, values, type } = props;
     const [ alert, setAlert ] = React.useState(null)
     
-
     const handleFormSubmission = (values) => {
         if(type === "edit"){
             axios.patch(recipesAPI + '/' + values.uuid, values)
@@ -182,7 +181,7 @@ const RecipeDialog = (props) =>{
 
 const RecipeForm = (props) => {
     const { type, recipe } = props;
-    const [open, setOpen] = React.useState(false);
+    const [ open, setOpen ] = React.useState(false);
     
     const templatedRecipe = {
         uuid: uuid.v4(),
@@ -218,8 +217,8 @@ const RecipeForm = (props) => {
       setOpen(true);
     };
   
-    const handleClose = (value) => {
-      setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
     };
   
     return (
