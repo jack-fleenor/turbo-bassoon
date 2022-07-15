@@ -2,13 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import * as uuid from 'uuid';
 import { Formik, Form, FieldArray, useField, Field } from 'formik';
-import { Button, TextField, Dialog, DialogTitle, MenuItem, ListItemText, ListItemIcon, IconButton, Divider, Typography } from '@mui/material';
+import { Alert, Button, TextField, Dialog, DialogTitle, MenuItem, ListItemText, ListItemIcon, IconButton, Divider, Typography } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 
-const recipesPostUrl = process.env.REACT_APP_POST_RECIPES_URL
+const recipesAPI = process.env.REACT_APP_GET_RECIPES_URL
 
 const TextFieldWrapper = ({name, customStyle, ...otherProps}) => {
-    const [field] = useField(name);
+    const [ field ] = useField(name);
     const configTextField = {
       ...otherProps,
       ...field,
@@ -27,39 +27,63 @@ const TextFieldWrapper = ({name, customStyle, ...otherProps}) => {
 }
 
 const RecipeDialog = (props) =>{
-    const { onClose, open, values, type } = props;
-
-    const handleClose = () => {
-      onClose();
-    };
+    const { handleClose, open, values, type } = props;
+    const [ alert, setAlert ] = React.useState(null)
+    
 
     const handleFormSubmission = (values) => {
         if(type === "edit"){
-            axios.patch(recipesPostUrl, values).then(res => alert(res.message)).catch(err => alert(`Unfortunately, this axios request does not seem to work. The url will return a 404. Example: ${err.message}`));
+            axios.patch(recipesAPI + '/' + values.uuid, values)
+            .then(res => setAlert({ severity: "success", message: "Receipe updated successfully!", res: res }))
+            .catch(err => setAlert({ severity: "error", message: err.message }));
         } else if(type === "create"){
-            axios.post(recipesPostUrl, values).then(res => alert('Success!')).catch(err => alert(err.message));
+            axios.post(recipesAPI, values)
+            .then(res => setAlert({ severity: "success", message: "Receipe created successfully!", res: res }))
+            .catch(err => setAlert({ severity: "error", message: err.message }));
         }
+        setTimeout(() => {
+            handleClose()
+        }, 3000);
     }
     
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>{type === "edit" ? 'Edit Recipe' : 'Create Recipe'}</DialogTitle>
-            <Formik enableReinitialize={true} initialValues={values} onSubmit={ (values) => handleFormSubmission(values) }>
+            <DialogTitle>
+                {type === "edit" ? 'Edit Recipe' : 'Create Recipe'}
+            </DialogTitle>
+            {
+                alert !== null ? <Alert variant="outlined" severity={alert.severity} sx={{margin: 5}}>{alert.message}</Alert> : null
+            }
+
+            <Formik enableReinitialize={true} initialValues={values} onSubmit={(values) => handleFormSubmission(values)}>
                 {({ values }) => (
                     <Form>
-                        <TextFieldWrapper name="title" label="Title" customStyle={{margin: '0 5% 2.5%', width: '90%'}} />
-                        <TextFieldWrapper name="description" label="Description" customStyle={{margin: '0 5% 2.5%', width: '90%'}} />
-                        <TextFieldWrapper name="servings" label="Servings" type="number" customStyle={{margin: '0 5% 2.5%', width: '90%'}} />
+                        <TextFieldWrapper 
+                            name="title" 
+                            label="Title" 
+                            customStyle={{margin: '0 5% 2.5%', width: '90%'}} 
+                        />
+                        <TextFieldWrapper 
+                            name="description" 
+                            label="Description" 
+                            customStyle={{margin: '0 5% 2.5%', width: '90%'}} 
+                        />
+                        <TextFieldWrapper 
+                            name="servings" 
+                            label="Servings" 
+                            type="number" 
+                            customStyle={{margin: '0 5% 2.5%', width: '90%'}} 
+                        />
                         <TextFieldWrapper
                             name="prepTime"
-                            type="number"
                             label="Prep Time"
+                            type="number"
                             customStyle={{margin: '0 2.5% 2.5% 5%', width: '41%'}}
                         />
                         <TextFieldWrapper
                             name="cookTime"
-                            type="number"
                             label="Cook Time"
+                            type="number"
                             customStyle={{margin: '0 2.5% 2.5% 5%', width: '41%'}}
                         />
                         <FieldArray name="ingredients">
@@ -70,22 +94,24 @@ const RecipeDialog = (props) =>{
                                             return (
                                                 <div key={ingredient.uuid}>
                                                     <TextFieldWrapper
-                                                        customStyle={{margin: '0 2.5% 2.5% 5%', width: '23%'}}
                                                         name={`ingredients[${index}].name`}
                                                         label="Ingredient"
+                                                        customStyle={{margin: '0 2.5% 2.5% 5%', width: '23%'}}
                                                     />
                                                     <TextFieldWrapper
-                                                        customStyle={{margin: '0 2.5% 2.5% 5%', width: '23%'}}
                                                         name={`ingredients[${index}].amount`}
                                                         label="Amount"
                                                         type="number"
-                                                        />
-                                                    <TextFieldWrapper
                                                         customStyle={{margin: '0 2.5% 2.5% 5%', width: '23%'}}
+                                                    />
+                                                    <TextFieldWrapper
                                                         name={`ingredients[${index}].measurement`}
                                                         label="Measurement"
-                                                        />
-                                                    <IconButton sx={{width: '5%'}} onClick={() => remove(index)}><Delete/></IconButton>
+                                                        customStyle={{margin: '0 2.5% 2.5% 5%', width: '23%'}}
+                                                    />
+                                                    <IconButton sx={{width: '5%'}} onClick={() => remove(index)}>
+                                                        <Delete/>
+                                                    </IconButton>
                                                 </div>
                                             )
                                         })
@@ -211,7 +237,7 @@ const RecipeForm = (props) => {
         }
         <RecipeDialog
           open={open}
-          onClose={handleClose}
+          handleClose={handleClose}
           values={type === "edit" ? recipe : templatedRecipe}
           type={type}
         />

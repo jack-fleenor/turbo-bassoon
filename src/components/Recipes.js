@@ -4,7 +4,7 @@ import Loading from './Loading';
 import RecipeForm from './RecipeForm';
 import { List, ListItem, ListItemText, IconButton, Tooltip, Menu, ListItemIcon, ListItemAvatar, Avatar, Dialog, Card, CardMedia, CardContent, Typography, Accordion, AccordionSummary, AccordionDetails, Stack } from '@mui/material';
 import { MoreVert, Group, AccessTime, ExpandMore, Info } from '@mui/icons-material';
-import decimalToFraction from '../utils/mathOperations'
+import decimalToFraction from '../utils/mathOperations';
 
 const baseUrl = process.env.REACT_APP_BASE_URL
 const recipesGetUrl = process.env.REACT_APP_GET_RECIPES_URL
@@ -137,7 +137,6 @@ const RecipeIngredientsItem = (props) => {
 
 const RecipeModal = (props) => {
     const { onClose, open, recipe, specials } = props;
-
     const handleClose = () => {
       onClose();
     };
@@ -145,7 +144,7 @@ const RecipeModal = (props) => {
     return (
       <Dialog onClose={handleClose} open={open} >
         <Card sx={{maxHeight: 500, overflowY: 'auto'}}>
-            <CardMedia alt={recipe.title} height="250" component="img" image={baseUrl + recipe.images.full} />
+            <CardMedia alt={recipe.title} height="250" component="img" image={ baseUrl + recipe.images.full } />
             <CardContent>
                 <Typography gutterBottom variant="h4" component="div">
                     {recipe.title}
