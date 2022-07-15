@@ -43,7 +43,8 @@ const RecipeDialog = (props) =>{
         }
         setTimeout(() => {
             handleClose()
-        }, 3000);
+            window.location.reload(false); // Bad Solution
+        }, 1500);
     }
     
     return (
