@@ -2,7 +2,15 @@ import React from 'react';
 import axios from 'axios';
 import * as uuid from 'uuid';
 import { Formik, Form, FieldArray, useField, Field } from 'formik';
-import { Alert, Button, TextField, Dialog, DialogTitle, MenuItem, ListItemText, ListItemIcon, IconButton, Divider, Typography } from '@mui/material';
+import { 
+    Alert, 
+    Button, 
+    TextField, 
+    Dialog, 
+    DialogTitle, 
+    MenuItem, 
+    ListItemText, 
+    ListItemIcon, IconButton, Divider, Typography } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 
 const recipesAPI = process.env.REACT_APP_GET_RECIPES_URL
@@ -28,7 +36,7 @@ const TextFieldWrapper = ({name, customStyle, ...otherProps}) => {
 
 const RecipeDialog = (props) =>{
     const { handleClose, open, values, type } = props;
-    const [ alert, setAlert ] = React.useState(null)
+    const [ alert, setAlert ] = React.useState(null);
     
     const handleFormSubmission = (values) => {
         if(type === "edit"){
