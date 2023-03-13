@@ -1,4 +1,4 @@
-Crescendo Collective - Frontend Skill Test
+Frontend Skill Test
 Goals
 
 For this javascript project we've provided a recipe API with two endpoints. With this API you'll need to complete the following objectives.
